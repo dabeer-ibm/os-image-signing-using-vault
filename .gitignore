@@ -1,0 +1,15 @@
+# Terraform
+**/.terraform/
+**/.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Packer
+packer/packer_cache/
+*.box
+
+# Local secrets / generated files
+*.pem
+*.key
+.env

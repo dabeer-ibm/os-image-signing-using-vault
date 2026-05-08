@@ -1,0 +1,145 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Architecture" id="arch">
+    <mxGraphModel dx="1400" dy="900" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="HCP Packer + Vault + Terraform → EC2" style="text;html=1;align=center;fontSize=20;fontStyle=1;fontColor=#1A1A1A" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="1520" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="buildLane" value="Build pipeline (one-off, run from laptop)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F0F4F8;strokeColor=#90A4AE;fontColor=#37474F;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=12" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="1520" height="240" as="geometry" />
+        </mxCell>
+
+        <mxCell id="devBuild" value="Operator" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F6FEB;strokeColor=#0D4DA8;fontColor=#FFFFFF;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="170" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="vaultBuild" value="HCP Vault&#10;aws/creds/demo-builder" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEC6E;strokeColor=#C7A600;fontColor=#000000;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="300" y="160" width="180" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="packer" value="Packer build&#10;(local CLI)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#02A8EF;strokeColor=#0072B0;fontColor=#FFFFFF;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="600" y="160" width="160" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ami" value="AMI&#10;(Ubuntu 22.04)" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ami;fillColor=#E7157B;strokeColor=#ffffff;html=1;fontSize=12;align=center;verticalLabelPosition=bottom;verticalAlign=top;fontColor=#000000" vertex="1" parent="1">
+          <mxGeometry x="880" y="160" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <mxCell id="hcppacker" value="HCP Packer Registry&#10;bucket: demo-ubuntu-base&#10;channel: production" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#02A8EF;strokeColor=#0072B0;fontColor=#FFFFFF;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1080" y="150" width="220" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b1" style="endArrow=classic;html=1;strokeColor=#1F6FEB;strokeWidth=2" edge="1" parent="1" source="devBuild" target="vaultBuild">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="b1l" value="vault read aws/creds" style="text;html=1;fontSize=11;labelBackgroundColor=#F0F4F8;align=center" vertex="1" parent="1">
+          <mxGeometry x="195" y="140" width="160" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b2" style="endArrow=classic;html=1;strokeColor=#C7A600;strokeWidth=2" edge="1" parent="1" source="vaultBuild" target="packer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="b2l" value="dynamic AWS keys" style="text;html=1;fontSize=11;labelBackgroundColor=#F0F4F8;align=center" vertex="1" parent="1">
+          <mxGeometry x="475" y="140" width="140" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b3" style="endArrow=classic;html=1;strokeColor=#FF9900;strokeWidth=2;dashed=1" edge="1" parent="1" source="packer" target="ami">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="b3l" value="builds AMI" style="text;html=1;fontSize=11;labelBackgroundColor=#F0F4F8;align=center" vertex="1" parent="1">
+          <mxGeometry x="755" y="140" width="120" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b4" style="endArrow=classic;html=1;strokeColor=#02A8EF;strokeWidth=2;exitX=1;exitY=0.75;entryX=0;entryY=0.75" edge="1" parent="1" source="packer" target="hcppacker">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="b4l" value="publish version + metadata" style="text;html=1;fontSize=11;labelBackgroundColor=#F0F4F8;align=center" vertex="1" parent="1">
+          <mxGeometry x="780" y="265" width="220" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="deployLane" value="Deploy pipeline (every git push to main)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F3F0FA;strokeColor=#9575CD;fontColor=#4527A0;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=12" vertex="1" parent="1">
+          <mxGeometry x="40" y="350" width="1520" height="500" as="geometry" />
+        </mxCell>
+
+        <mxCell id="devDeploy" value="Developer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F6FEB;strokeColor=#0D4DA8;fontColor=#FFFFFF;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="560" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="gh" value="GitHub Repo&#10;terraform/" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#24292F;strokeColor=#000000;fontColor=#FFFFFF;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="280" y="555" width="160" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tfc" value="HCP Terraform&#10;VCS workspace&#10;auto-apply" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B42BC;strokeColor=#5C2D91;fontColor=#FFFFFF;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="540" y="545" width="180" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="vaultDeploy" value="HCP Vault&#10;• aws/creds/demo-builder&#10;• kv/demo/ssh" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEC6E;strokeColor=#C7A600;fontColor=#000000;fontSize=12;fontStyle=1;align=left;spacingLeft=12" vertex="1" parent="1">
+          <mxGeometry x="540" y="400" width="180" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="hcppackerRef" value="HCP Packer&#10;channel: production" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#02A8EF;strokeColor=#0072B0;fontColor=#FFFFFF;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="540" y="700" width="180" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="awsbox" value="AWS account (default VPC / default SG)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#FF9900;fontColor=#FF9900;fontSize=13;fontStyle=1;verticalAlign=top;dashed=1;align=right;spacingRight=12" vertex="1" parent="1">
+          <mxGeometry x="900" y="395" width="620" height="420" as="geometry" />
+        </mxCell>
+
+        <mxCell id="iam" value="Dynamic IAM user&#10;(short-lived,&#10;minted by Vault)" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.identity_and_access_management_iam;fillColor=#C8252D;strokeColor=#ffffff;html=1;fontSize=11;align=center;verticalLabelPosition=bottom;verticalAlign=top;fontColor=#000000" vertex="1" parent="1">
+          <mxGeometry x="970" y="555" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ec2" value="EC2 instance&#10;t3.micro&#10;Ubuntu 22.04 (from AMI)" style="shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ec2;fillColor=#ED7100;strokeColor=#ffffff;html=1;fontSize=12;align=center;verticalLabelPosition=bottom;verticalAlign=top;fontColor=#000000" vertex="1" parent="1">
+          <mxGeometry x="1340" y="555" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <mxCell id="d1" style="endArrow=classic;html=1;strokeColor=#1F6FEB;strokeWidth=2" edge="1" parent="1" source="devDeploy" target="gh">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d1l" value="git push (main)" style="text;html=1;fontSize=11;labelBackgroundColor=#F3F0FA;align=center" vertex="1" parent="1">
+          <mxGeometry x="195" y="530" width="160" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="d2" style="endArrow=classic;html=1;strokeColor=#7B42BC;strokeWidth=2" edge="1" parent="1" source="gh" target="tfc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d2l" value="webhook → run" style="text;html=1;fontSize=11;labelBackgroundColor=#F3F0FA;align=center" vertex="1" parent="1">
+          <mxGeometry x="435" y="530" width="120" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="d3" style="endArrow=classic;html=1;strokeColor=#C7A600;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0" edge="1" parent="1" source="vaultDeploy" target="tfc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d3l" value="dynamic AWS creds&#10;+ SSH pubkey" style="text;html=1;fontSize=11;labelBackgroundColor=#F3F0FA;align=center" vertex="1" parent="1">
+          <mxGeometry x="730" y="500" width="160" height="34" as="geometry" />
+        </mxCell>
+
+        <mxCell id="d4" style="endArrow=classic;html=1;strokeColor=#02A8EF;strokeWidth=2;exitX=0.5;exitY=0;entryX=0.5;entryY=1" edge="1" parent="1" source="hcppackerRef" target="tfc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d4l" value="resolve AMI ID&#10;by channel" style="text;html=1;fontSize=11;labelBackgroundColor=#F3F0FA;align=center" vertex="1" parent="1">
+          <mxGeometry x="730" y="650" width="160" height="34" as="geometry" />
+        </mxCell>
+
+        <mxCell id="d5" style="endArrow=classic;html=1;strokeColor=#FF9900;strokeWidth=2" edge="1" parent="1" source="tfc" target="ec2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d5l" value="terraform apply → RunInstances" style="text;html=1;fontSize=11;labelBackgroundColor=#F3F0FA;align=center" vertex="1" parent="1">
+          <mxGeometry x="1060" y="520" width="240" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="d6" style="endArrow=classic;html=1;strokeColor=#C8252D;strokeWidth=2;dashed=1;exitX=1;exitY=0.75;entryX=0;entryY=0.5" edge="1" parent="1" source="vaultDeploy" target="iam">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d6l" value="creates / revokes" style="text;html=1;fontSize=11;labelBackgroundColor=#F3F0FA;align=center" vertex="1" parent="1">
+          <mxGeometry x="780" y="455" width="160" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
