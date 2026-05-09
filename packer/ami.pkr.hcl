@@ -97,6 +97,11 @@ build {
 
     post-processor "shell-local" {
       inline = ["./sign-ami.sh manifest.json"]
+      environment_vars = [
+        "VAULT_ADDR=${var.vault_addr}",
+        "VAULT_NAMESPACE=${var.vault_namespace}",
+        "VAULT_TOKEN=${var.vault_token}",
+      ]
     }
   }
 }

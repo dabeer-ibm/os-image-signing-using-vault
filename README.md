@@ -266,8 +266,12 @@ rm /tmp/demo.pem
 ## File layout
 
 ```
-packer-terraform-vault-ec2/
+packer-terraform-vault-ec2-for-signing/
 ├── README.md
+├── assets/
+│   └── architecture.drawio
+├── vault/
+│   └── setup.sh                   ← idempotent Vault config (Step 2)
 ├── packer/
 │   ├── ami.pkr.hcl
 │   ├── sign-ami.sh                ← signs the AMI with Vault Transit (post-build)
@@ -284,9 +288,8 @@ packer-terraform-vault-ec2/
 
 ## What this demo proves
 
-- **vault/
-│   └── setup.sh                   ← idempotent Vault config (Step 2)
-├── No static cloud credentials** in Packer or Terraform — both pull short-lived AWS keys from Vault.
+- **No static cloud credentials** in Packer or Terraform — both pull short-lived AWS keys from Vault.
+- **Cryptographically signed golden images** — Packer signs every AMI via Vault Transit (`transit/sign/packer-images`); Terraform refuses to launch any AMI whose signature does not verify, so unsigned or tampered images cannot reach EC2.
 - **Golden image promotion** via HCP Packer channels — change the channel pointer to roll a new image; next push triggers Terraform to redeploy.
 - **GitOps** for infrastructure — GitHub is the source of truth; HCP Terraform enforces plan-apply on every change.
 - **Bounded blast radius** — EC2 lands in default VPC + default SG; no networking is created.
